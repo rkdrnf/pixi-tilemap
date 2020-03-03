@@ -39,9 +39,13 @@ varying vec4 vFrame;
 
 void main(void){
    gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);
-   vec2 anim = aAnim * mod(animationFrame + 1.0, vec2(aAnimWidth, aAnimHeight));
-   vTextureCoord = aTextureCoord + anim;
-   vFrame = aFrame + vec4(anim, anim);
+
+   vec2 animCount = floor((aAnim + 0.5) / 2048.0);
+   vec2 animFrameOffset = aAnim - animCount * 2048.0;
+   vec2 animOffset = animFrameOffset * floor(mod(animationFrame + 0.5, animCount));
+
+   vTextureCoord = aTextureCoord + animOffset;
+   vFrame = aFrame + vec4(animOffset, animOffset);
    vTextureId = aTextureId;
 }
 `;
@@ -64,7 +68,7 @@ void main(void){
     }
 
     export class RectTileShader extends TilemapShader {
-        vertSize = pixi_tilemap.POINT_STRUCT_SIZE + 1;
+        vertSize = 11;
         vertPerQuad = 4;
         stride = this.vertSize * 4;
 
@@ -86,8 +90,6 @@ void main(void){
                 .addAttribute(vb, this.attributes.aFrame, gl.FLOAT, false, this.stride, 4 * 4)
                 .addAttribute(vb, this.attributes.aAnim, gl.FLOAT, false, this.stride, 8 * 4)
                 .addAttribute(vb, this.attributes.aTextureId, gl.FLOAT, false, this.stride, 10 * 4)
-                .addAttribute(vb, this.attributes.aAnimWidth, gl.FLOAT, false, this.stride, 11 * 4)
-                .addAttribute(vb, this.attributes.aAnimHeight, gl.FLOAT, false, this.stride, 12 * 4);
         }
     }
 
