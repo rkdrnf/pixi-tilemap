@@ -82,7 +82,7 @@ namespace pixi_tilemap {
             return true;
         }
 
-        addRect(textureIndex: number, u: number, v: number, x: number, y: number, tileWidth: number, tileHeight: number, animX: number = 0, animY: number = 0, rotate: number = 0, animWidth: number = 1, animHeight: number = 1) {
+        addRect(textureIndex: number, u: number, v: number, x: number, y: number, tileWidth: number, tileHeight: number, animX: number = 0, animY: number = 0, rotate: number = 0, animWidth: number = 1024, animHeight: number = 1024) {
             const pb = this.pointsBuf;
             this.hasAnim = this.hasAnim || animX > 0 || animY > 0;
 
@@ -98,6 +98,25 @@ namespace pixi_tilemap {
             pb.push(textureIndex);
             pb.push(animWidth);
             pb.push(animHeight);
+        }
+
+        tileRotate(rotate: number) {
+            const pb = this.pointsBuf;
+            pb[pb.length - 3] = rotate;
+        }
+
+        tileAnimX(offset: number, count: number) {
+            const pb = this.pointsBuf;
+
+            pb[pb.length - 5] = offset;
+            pb[pb.length - 2] = count;
+        }
+
+        tileAnimY(offset: number, count: number) {
+            const pb = this.pointsBuf;
+
+            pb[pb.length - 4] = offset;
+            pb[pb.length - 1] = count;
         }
 
         renderCanvas(renderer: PIXI.CanvasRenderer) {
