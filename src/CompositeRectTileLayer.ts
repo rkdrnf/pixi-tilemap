@@ -208,7 +208,8 @@ export class CompositeRectTileLayer extends Container {
         renderer.globalUniforms.uniforms.projectionMatrix.copyTo(this._globalMat).append(this.worldTransform);
         shader.uniforms.shadowColor = this.shadowColor;
         shader.uniforms.animationFrame = this.tileAnim || plugin.tileAnim;
-        renderer.shader.bind(shader, false);
+        // We don't need to sync uniforms here. Rect tile layer syncs uniform.
+        renderer.shader.bind(shader, true);
         let layers = this.children;
         for (let i = 0; i < layers.length; i++) {
             const layer = (layers[i] as RectTileLayer);
